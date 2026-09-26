@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Layer 1 · Foundation</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --paper:#F3EEE3; --vellum:#E7DEC9; --ink:#14110C; --ox:#6E1A18; --brass:#B08A3E; }
+  body { font-family: Constantia, Georgia, serif; color:var(--ink); background:var(--paper); }
+  .page { width:210mm; height:296mm; padding:20mm 22mm; background:var(--paper);
+          page-break-after:always; position:relative; overflow:hidden; }
+  .page:last-child { page-break-after:auto; }
+  .mono { font-family: Consolas,"Courier New",monospace; letter-spacing:.16em; text-transform:uppercase; }
+  .label { font-size:8.5pt; color:var(--brass); margin-bottom:3mm; }
+  h1 { font-size:34pt; font-weight:bold; line-height:1.1; }
+  h2 { font-size:19pt; font-weight:bold; margin-bottom:3mm; line-height:1.18; }
+  h3 { font-family:Consolas,monospace; font-size:8pt; letter-spacing:.16em; text-transform:uppercase;
+       color:var(--brass); margin:6mm 0 1.5mm 0; }
+  .deck { font-size:11pt; line-height:1.45; color:var(--ox); margin-bottom:5mm; }
+  p { font-size:10.5pt; line-height:1.5; margin-bottom:3mm; }
+  li { font-size:10.5pt; line-height:1.5; margin-bottom:1.5mm; margin-left:5mm; }
+  .two { display:flex; gap:8mm; margin-top:4mm; }
+  .two > div { flex:1; }
+  figure { margin:5mm 0; }
+  .cap { font-family:Consolas,monospace; font-size:7pt; letter-spacing:.1em; text-transform:uppercase;
+         color:var(--brass); text-align:center; margin-top:2mm; }
+  .box { border-left:2mm solid var(--ox); background:var(--vellum); padding:3.5mm 4.5mm; margin-top:5mm; }
+  .box .mono { font-size:7.5pt; color:var(--ox); display:block; margin-bottom:1.2mm; }
+  .box p { margin:0; }
+  .cmd { font-family:Consolas,monospace; font-size:9.5pt; background:var(--ink); color:var(--paper);
+         padding:3mm 4mm; margin:3mm 0; }
+  .footer { position:absolute; bottom:10mm; left:22mm; right:22mm; display:flex;
+            justify-content:space-between; font-size:7pt; color:var(--brass); }
+  .pgno { font-family:Consolas,monospace; font-size:7pt; letter-spacing:.1em; color:var(--brass); }
+  .pos { position:absolute; top:19mm; right:22mm; width:48mm; }
+  .rule { border:none; border-top:.3mm solid var(--ink); opacity:.25; margin:5mm 0; }
+  .cover { display:flex; flex-direction:column; justify-content:space-between; text-align:center; padding-top:44mm; }
+  .cover .word { font-size:24pt; font-weight:bold; letter-spacing:.3em; margin-top:9mm; }
+  .cover h1 { margin-top:14mm; }
+  .cover .sub { font-size:12pt; color:var(--ox); margin-top:5mm; line-height:1.5; }
+  table { width:100%; border-collapse:collapse; margin-top:3mm; }
+  th { font-family:Consolas,monospace; font-size:7.5pt; letter-spacing:.14em; text-transform:uppercase;
+       color:var(--brass); text-align:left; padding:1.8mm 2mm; border-bottom:.4mm solid var(--ink); }
+  td { font-size:9.5pt; line-height:1.4; padding:2mm; border-bottom:.2mm solid rgba(20,17,12,.2); vertical-align:top; }
+  td.n { font-family:Consolas,monospace; color:var(--ox); font-weight:bold; width:10mm; }
+  text { font-family:Consolas,"Courier New",monospace; }
+  .t  { font-size:9.2px; letter-spacing:.05em; fill:#14110C; }
+  .tb { font-size:9.2px; letter-spacing:.12em; fill:#B08A3E; }
+  .tx { font-size:9.2px; letter-spacing:.05em; fill:#6E1A18; }
+  .ts { font-size:8px;   letter-spacing:.05em; fill:#14110C; opacity:.8; }
+  .tw { font-size:9.2px; letter-spacing:.05em; fill:#F3EEE3; }
+  .tsw{ font-size:8px;   letter-spacing:.05em; fill:#F3EEE3; }
+  .tsb{ font-size:8px;   letter-spacing:.12em; fill:#B08A3E; }
+  /* Pages 5 and 6 run long. The page is a fixed 296mm with overflow:hidden, so anything past
+     the bottom is DELETED rather than reflowed -- on 2026-08-07 page 5's closing list printed
+     straight through the footer and off the sheet. This recovers the space by tightening
+     leading and table padding on those two pages only, so no wording had to be cut.
+     Re-run outliers-crm-series/check_guide_overflow.py after ANY edit to this file. */
+  .page.tight p { line-height:1.4; margin-bottom:2.2mm; }
+  .page.tight li { line-height:1.4; margin-bottom:1.3mm; }
+  .page.tight td { padding:1.5mm 2mm; line-height:1.32; }
+  .page.tight h3 { margin:3.6mm 0 1.2mm 0; }
+  .page.tight ul { margin-bottom:0; }
+  .page.tight .deck { margin-bottom:3.5mm; }
+
+  .c { font-family:Consolas,monospace; font-size:7.6pt; white-space:nowrap; margin:0; line-height:1.35; overflow:hidden; }
+  .cmd { white-space:pre !important; overflow:hidden; padding:2.4mm 4mm; margin:2.4mm 0; line-height:1.5; }
+  .r { font-size:9pt; line-height:1.3; color:var(--ox); margin:0 0 1.5mm 0; }
+  .macrun p { font-size:9.6pt; line-height:1.4; margin-bottom:2mm; }
+  .macrun h3 { margin-top:4mm; }
+  .macrun .box p + p { margin-top:2mm; }
+  td { font-size:9.1pt; line-height:1.3; padding:1.4mm 2mm; }
+  p { font-size:10.3pt; line-height:1.46; margin-bottom:2.6mm; }
+  li { font-size:10.3pt; line-height:1.46; }
+  h3 { margin-top:5mm; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="page cover">
+  <div>
+    <svg width="132" height="132" viewBox="0 0 200 200" style="display:block;margin:0 auto">
+      <circle cx="100" cy="100" r="90" fill="none" stroke="#14110C" stroke-width="3.15"/>
+      <circle cx="100" cy="100" r="50.4" fill="none" stroke="#14110C" stroke-width="18"/>
+      <circle cx="162.51" cy="35.26" r="10.35" fill="#6E1A18"/>
+    </svg>
+    <div class="word mono">Outliers</div>
+    <h1>Build Your Own CRM</h1>
+    <div class="sub">Layer 1 of 8 &nbsp;&middot;&nbsp; The whole picture,<br>and the foundation everything sits on.</div><div class="mono" style="font-size:10pt;letter-spacing:.3em;color:#F3EEE3;background:#6E1A18;display:inline-block;padding:2mm 6mm;margin-top:8mm">For Mac</div>
+  </div>
+  <div style="margin-bottom:15mm">
+    <div class="mono" style="font-size:8.5pt;color:#B08A3E">Est. MMXXVI &nbsp;&middot;&nbsp; Outliers Accelerator</div>
+  </div>
+</div>
+
+<!-- PAGE 2 : WHAT A CRM IS -->
+<div class="page">
+  <div class="label mono">Start here</div>
+  <h2>What a CRM actually is</h2>
+  <div class="deck">A system which tracks your interactions with other people. That is the whole of it.</div>
+  <p>Everything in these 8 guides is a consequence of that one sentence. It is a record of who you know and what has passed between you, kept somewhere it will still be readable years from now. It is not a database you query, and not a sales tool you have to feed.</p>
+
+  <h3>So why does almost nobody use theirs</h3>
+  <p>Ask anyone who has abandoned a CRM and you get the same answer twice: it was too complicated, and it became admin. Those are the same answer. A system that asks you to type records in competes with everything else in your day, and it loses, usually within a month or 2. Then the records go stale, then you stop trusting them, then you stop opening it.</p>
+  <p>So every decision in this build is made against admin. If a step exists only to keep the system fed, it does not go in.</p>
+
+  <h3>Why this is built in layers</h3>
+  <p>The instinct is to plan the whole system and then build it in order, front to back. That is how school works and how most projects are run, so it gets applied here without much thought. It does not work for a system like this, because you cannot know what the finished system needs until parts of it exist.</p>
+  <p>Layers work differently. Each one solves one problem and is useful on its own. Nothing is thrown away when the next arrives; it gets built on. Think of a game character rather than a road: abilities accumulate, and a character at level 40 still has everything they had at level 10.</p>
+
+  <figure>
+    <svg viewBox="0 0 560 160" width="100%">
+      <text class="tb" x="16" y="16">A ROAD (WHAT MOST PEOPLE PICTURE)</text>
+      <line x1="20" y1="44" x2="440" y2="44" stroke="#14110C" stroke-width="1" opacity=".5"/>
+      <g fill="#E7DEC9" stroke="#14110C" stroke-width="0.7">
+        <rect x="20" y="34" width="72" height="20"/><rect x="128" y="34" width="72" height="20"/>
+        <rect x="236" y="34" width="72" height="20"/><rect x="344" y="34" width="72" height="20"/>
+      </g>
+      <text class="ts" x="30" y="48">step 1</text><text class="ts" x="138" y="48">step 2</text>
+      <text class="ts" x="246" y="48">step 3</text><text class="ts" x="354" y="48">step 4</text>
+      <text class="tx" x="452" y="48">each one replaces</text>
+      <text class="tx" x="452" y="60">the one before</text>
+      <line x1="16" y1="76" x2="544" y2="76" stroke="#14110C" stroke-width="0.3" opacity=".3"/>
+      <text class="tb" x="16" y="94">LAYERS (WHAT ACTUALLY HAPPENS)</text>
+      <g fill="#E7DEC9" stroke="#14110C" stroke-width="0.7">
+        <rect x="20" y="132" width="300" height="15"/>
+        <rect x="20" y="115" width="240" height="15"/>
+        <rect x="20" y="98"  width="180" height="15"/>
+      </g>
+      <text class="ts" x="28" y="143">the foundation</text>
+      <text class="ts" x="28" y="126">what sits on it</text>
+      <text class="ts" x="28" y="109">and so on up</text>
+      <text class="tx" x="336" y="124">nothing is outgrown.</text>
+      <text class="tx" x="336" y="138">the early parts carry the later ones</text>
+    </svg>
+    <div class="cap">The top row replaces itself as it goes. The bottom row accumulates.</div>
+  </figure>
+
+  <div class="footer"><span class="mono">Build Your Own CRM</span><span class="pgno">2</span><span class="mono">Outliers</span></div>
+</div>
+
+<!-- PAGE 3 : THE EIGHT LAYERS -->
+<div class="page">
+  <div class="label mono">The whole picture</div>
+  <h2>The 8 layers, and what each one is for</h2>
+  <div class="deck">Read this once so nothing later feels like it came out of nowhere. You are not expected to remember it.</div>
+
+  <table>
+    <tr><th style="width:8mm">#</th><th style="width:38mm">Layer</th><th>What it gives you</th></tr>
+    <tr><td class="n">1</td><td>Foundation</td><td>Somewhere to keep it all that you own outright, and that will still open in 10 years.</td></tr>
+    <tr><td class="n">2</td><td>The rules</td><td>A way to tell one person from another, so the same human never ends up in there twice.</td></tr>
+    <tr><td class="n">3</td><td>What you store</td><td>You record what happened. The system works out everything else from it.</td></tr>
+    <tr><td class="n">4</td><td>Capture</td><td>It builds its own history from exports of places your conversations already happen. This is where the typing stops.</td></tr>
+    <tr><td class="n">5</td><td>Judgement</td><td>Assistants that read, score and draft, each with one job and each showing its working.</td></tr>
+    <tr><td class="n">6</td><td>Order and safety</td><td>Limits, sequence, and the rule that nothing reaches a person without your hand.</td></tr>
+    <tr><td class="n">7</td><td>Today</td><td>One short list each morning: who to speak to, and why.</td></tr>
+    <tr><td class="n">8</td><td>Verification</td><td>Whether any of it is working, and a shout when it stops.</td></tr>
+  </table>
+
+  <h3>What you will own at the end</h3>
+  <p>A system that keeps a record of everyone you deal with, builds its own history from sources you already have, tells you each morning who to speak to and why, refuses to contact anyone without you, and reports when it stops working.</p><p>It lives on your own machine and the records are yours outright. The only running cost anywhere in the build is the AI model in Layer 5, and you choose which one and how much of it you use. Layers 1 to 4 and 6 to 8 use no AI at all.</p>
+
+  <h3>The one rule for building it</h3>
+  <p>In order, one layer at a time, and do not move on until the one you are on works. The temptation is to jump ahead to the assistants in Layer 5, because that is the interesting part. Assistants standing on a foundation that cannot reliably say who someone is will produce confident, well-written, wrong answers all day.</p>
+  <p>There is no schedule. Move to the next layer when you have finished the one you are on, whether that is tonight or next month.</p>
+
+  <div class="footer"><span class="mono">Build Your Own CRM</span><span class="pgno">3</span><span class="mono">Outliers</span></div>
+</div>
+
+<!-- PAGE 4 : THE FOUNDATION -->
+<div class="page">
+  <div class="label mono">Layer 1 &middot; Foundation</div>
+  <div class="pos"><svg viewBox="0 0 152 20" width="100%">
+    <rect x="0" y="0" width="16" height="7" fill="#14110C" stroke="#14110C" stroke-width="0.4"/>
+    <rect x="19" y="0" width="16" height="7" fill="#E7DEC9" stroke="#14110C" stroke-width="0.4"/>
+    <rect x="38" y="0" width="16" height="7" fill="#E7DEC9" stroke="#14110C" stroke-width="0.4"/>
+    <rect x="57" y="0" width="16" height="7" fill="#E7DEC9" stroke="#14110C" stroke-width="0.4"/>
+    <rect x="76" y="0" width="16" height="7" fill="#E7DEC9" stroke="#14110C" stroke-width="0.4"/>
+    <rect x="95" y="0" width="16" height="7" fill="#E7DEC9" stroke="#14110C" stroke-width="0.4"/>
+    <rect x="114" y="0" width="16" height="7" fill="#E7DEC9" stroke="#14110C" stroke-width="0.4"/>
+    <rect x="133" y="0" width="16" height="7" fill="#E7DEC9" stroke="#14110C" stroke-width="0.4"/>
+    <text x="0" y="17" style="font-size:6px;letter-spacing:.14em;fill:#B08A3E">LAYER 1</text></svg></div>
+  <h2>Where it all lives</h2>
+  <div class="deck">Your CRM is a folder of plain text files on your own computer. That is the actual design, not a simplified version of it for teaching.</div>
+
+  <figure>
+    <svg viewBox="0 0 560 168" width="100%">
+      <rect x="16" y="20" width="250" height="120" fill="none" stroke="#14110C" stroke-width="1.8"/>
+      <text class="tb" x="28" y="42">YOUR COMPUTER</text>
+      <g fill="#E7DEC9" stroke="#14110C" stroke-width="0.8">
+        <rect x="28" y="56" width="70" height="50"/><rect x="106" y="56" width="70" height="50"/>
+        <rect x="184" y="56" width="70" height="50"/>
+      </g>
+      <text class="ts" x="34" y="86">rowan.md</text><text class="ts" x="112" y="86">mara.md</text><text class="ts" x="190" y="86">tobias.md</text>
+      <text class="ts" x="28" y="126">one file per person. plain text. yours.</text>
+      <g stroke="#6E1A18" stroke-width="1.3" fill="none" marker-end="url(#a1)">
+        <path d="M272 56 L326 44"/><path d="M272 108 L326 120"/>
+      </g>
+      <defs><marker id="a1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+        <path d="M0,0 L7,3.5 L0,7 z" fill="#6E1A18"/></marker></defs>
+      <text class="t"  x="336" y="46">YOU read it</text>
+      <text class="ts" x="336" y="62">open the file. it is just writing.</text>
+      <text class="t"  x="336" y="122">SOFTWARE reads it</text>
+      <text class="ts" x="336" y="138">the same file. no special access.</text>
+    </svg>
+    <div class="cap">One folder. Read by you, and later by the programs you build.</div>
+  </figure>
+
+  <div class="two">
+    <div>
+      <h3>Why not a hosted CRM product</h3>
+      <p>A hosted product keeps your records on someone else's computers, in their format, and you get them back on their terms. There is a second reason that matters more here: later layers need software to read and write these records directly. A screen built for human clicking gives software no orderly way in.</p>
+    </div>
+    <div>
+      <h3>Why plain text</h3>
+      <p>A text file opens on any machine, in any decade, with or without the app you made it in. You will use Obsidian to look at these files, because it is free and it shows how they link together. But Obsidian only reads the folder. If it vanished tomorrow, every record would be exactly where you left it.</p>
+    </div>
+  </div>
+
+  <div class="box">
+    <span class="mono">Where it goes, and where it does not</span>
+    <p><strong>Your CRM is a vault of its own, separate from the second brain you have already
+    built.</strong> 2 folders side by side, both yours, and Obsidian opens as many vaults as
+    you like. What it must not be is a folder inside your second brain. Every layer after this
+    one reads every file under the folder you name, and your second brain contains a great deal
+    that has no business sitting in a contact record. The installer offers you a new folder
+    called <strong>CRM</strong>; take it unless you have a reason not to.</p>
+  </div>
+
+  <div class="box">
+    <span class="mono">The one rule that starts today</span>
+    <p><strong>One person, one file. Never 2.</strong> The moment someone exists twice you have 2 half-histories and no way to know which is right. Layer 2 exists to protect this rule with actual machinery, but it begins with you not making a second file.</p>
+  </div>
+
+  <div class="footer"><span class="mono">Layer 1 &middot; Foundation</span><span class="pgno">4</span><span class="mono">Outliers</span></div>
+</div>
+
+<div class="page"><div class="label mono">Layer 1 &middot; Before you start</div><h2>Before you start on a Mac</h2><p>Everything in this guide is typed into <strong>Terminal</strong>, the Mac's window for typing commands instead of clicking. Press Command and Space together, type Terminal, and press Return.</p><h3>Python</h3><p>Install Python from python.org (the downloads page for macOS, the link labelled "macOS installer"). When it finishes, double-click <strong>Install Certificates.command</strong> and <strong>Update Shell Profile.command</strong> in the Python folder inside Applications, then open a new Terminal window and type:</p><div class="cmd">python3 -c "import sys; print(sys.prefix)"</div><p>It should print a line starting /Library/Frameworks/Python.framework. If it starts /opt/homebrew or /usr/local/Cellar, your Terminal uses Homebrew's Python (Homebrew is an add-on installer many Mac owners use). The CRM works with either: it needs no add-ons, only Python itself.</p><h3>Git</h3><p>Git, the free tool that copies the code onto your Mac, comes with Apple's developer tools. The first time you type a line starting git, your Mac may show a box asking to install them. Press Install, wait until it has finished, then type the line again.</p><h3>How to type the lines</h3><p>Where this guide shows several lines in a black box, type them one at a time: type the first, press Return, wait for it to finish and give you a fresh line, then type the next. The installer asks you questions. Each offers an answer in [square brackets]; press Return to take it, or type your own and press Return.</p><p><strong>Apple Silicon or Intel</strong> (the 2 kinds of chip a Mac can have; the Apple menu, then About This Mac, shows yours): the steps are the same on both, and both were tested.</p><p><strong>Tried only on test Macs.</strong> Mac test for this version not yet recorded.</p><div class="footer"><span class="mono">Layer 1 &middot; Foundation</span><span class="pgno">5</span><span class="mono">Outliers</span></div></div>
+
+<!-- PAGE 5 : INSTALL -->
+<div class="page tight">
+  <div class="label mono">Layer 1 &middot; Install</div>
+  <h2>Build it</h2>
+  <div class="deck">One command does it, and asks you a few questions so what you get is yours.</div>
+
+  <h3>Before you start</h3>
+  <ul>
+    <li><strong>Python.</strong> Free. If you do not have it, page 5, "Before you start on a Mac", says how to get it.</li>
+    <li><strong>Obsidian.</strong> Free, from obsidian.md. You can install it after if you prefer.</li>
+    <li>Nothing else. No account, no card, no subscription, and nothing leaves your computer.</li>
+  </ul>
+
+  <h3>Where these lines go</h3>
+  <p>Into a <strong>terminal</strong>: the window where you type commands instead of clicking
+  on menus. You may never have opened one. That is fine.</p>
+  <ul>
+    <li>Press Command and Space together, type <strong>Terminal</strong>, and press Return.</li>
+  </ul>
+  <p>Type each line, press Return, and wait for it to finish before the next. The second begins
+  with <strong>cd</strong>, which means "go into that folder".</p>
+
+  <h3>Run it</h3>
+  <div class="cmd">git clone https://github.com/OUTLIERS-ai/outliers-crm-01-foundation-mac<br>cd outliers-crm-01-foundation-mac<br>python3 install.py</div>
+  <p>If the box asking to install Apple's developer tools will not install, download the code as a zip file instead (the green Code button on the repo's page; if it stays a zip file in Downloads, double-click it). Then type <strong>cd ~/Downloads/outliers-crm-01-foundation-mac-main</strong> and the last line only.</p>
+
+  <h3>What it asks you, and why</h3>
+  <table>
+    <tr><th style="width:56mm">Question</th><th>What it changes</th></tr>
+    <tr><td>Where should your CRM live?</td><td>The folder it builds, which becomes a vault of its own. Take the one it offers. Point it inside your second brain and it will stop and say so.</td></tr>
+    <tr><td>What do you call the people you deal with?</td><td>Clients, prospects, members, guests, patients. Your word gets used throughout, so it reads like your business rather than a template.</td></tr>
+    <tr><td>What does your business do, in one line?</td><td>Labels the CRM. Purely so it feels like yours. You can skip it.</td></tr>
+    <tr><td>Where do most of your relationships start?</td><td>The important one. Every record keeps the detail you always have for someone from that source, and in Layer 2 that detail becomes how the system tells one person from another.</td></tr>
+    <tr><td>Have you got a contacts export handy?</td><td>Optional. If you have one it brings those people in, so you do not start with an empty folder. Skip it and Layer 4 does this properly anyway.</td></tr>
+  </table>
+
+  <h3>What you end up with</h3>
+  <ul>
+    <li>A <strong>People</strong> folder. One file per person.</li>
+    <li>A <strong>template</strong>, so every new record starts the same shape.</li>
+    <li>A <strong>history</strong> of every change, if you said yes to it, so you can see what any record used to say.</li>
+  </ul>
+
+  <div class="footer"><span class="mono">Layer 1 &middot; Install</span><span class="pgno">6</span><span class="mono">Outliers</span></div>
+</div>
+
+<!-- PAGE 6 : WHAT NOW -->
+<div class="page tight">
+  <div class="label mono">Layer 1 &middot; Finishing</div>
+  <h2>What to do now</h2>
+  <div class="deck">Nothing yet, and that is deliberate.</div>
+
+  <p>There is no data in your CRM yet, so anything this guide asked you to do at this point would be typing records in by hand. Typing is what kills CRMs, and starting that habit here would teach exactly the wrong lesson.</p>
+  <p>If you brought in a contacts export, open the folder in Obsidian and have a look at what came in. You will notice some people appear twice, some records are half empty, and some names are odd. That is normal. That is what most contact lists look like underneath. Layer 2 is what sorts it out, and seeing the mess first is the best possible reason to build it.</p>
+
+  <h3>If you already had something like this</h3>
+  <p>Some of you will have built something similar already. Here is your test rather than an instruction: <strong>find a person who exists twice in your system and work out which of the 2 records is right.</strong> If you cannot do that quickly and confidently, Layer 2 is doing real work for you and you should not skip it.</p>
+
+  <hr class="rule">
+
+  <h3>What this layer leaves unsolved</h3>
+  <p>A folder will accept anything you put in it. It does not stop the same person going in twice under 2 spellings of their name, it does not check that a record has what it needs, and it has no way of knowing that "Rowan Ashdown", "R. Ashdown" and a profile link are one person.</p>
+  <p>Until that is fixed, nothing built on top can be trusted, because every clever feature you add later has to start by asking "who is this?" and getting the right answer.</p>
+
+  <div class="box">
+    <span class="mono">Next: Layer 2 &middot; The rules</span>
+    <p>Giving your CRM a way to tell one person from another, and a shape every record has to follow. Everything else in the build depends on it.</p>
+  </div>
+
+  <h3>Words used in this guide</h3>
+  <table>
+    <tr><td style="width:34mm"><strong>CRM</strong></td><td>Customer relationship management. A system that tracks your interactions with other people.</td></tr>
+    <tr><td><strong>Vault</strong></td><td>Obsidian's word for a folder it opens. Your second brain is one vault. Your CRM is another. Obsidian opens as many as you like and switches between them.</td></tr>
+    <tr><td><strong>Plain text</strong></td><td>A file with no hidden formatting, readable by any program, on any computer, in any decade.</td></tr>
+    <tr><td><strong>Git</strong></td><td>A free tool for copying code onto your machine, and for keeping dated copies of changes you choose to save.</td></tr>
+    <tr><td><strong>Terminal</strong></td><td>The window where you type commands instead of clicking. On a Mac it is called Terminal.</td><tr><td><strong>Repository (repo)</strong></td><td>A folder of code you can copy to your machine in one command.</td></tr></tr>
+  </table>
+
+  <div class="footer"><span class="mono">Layer 1 &middot; Foundation</span><span class="pgno">7</span><span class="mono">Outliers</span></div>
+</div>
+
+<div class="page"><div class="label mono">Layer 1 &middot; What was run on a Mac</div><div class="macrun"><h2>What was run on a Mac</h2><p>A <b>test Mac</b> is one of the Macs GitHub rents out by the minute to run a script.</p><p>Mac test for this version not yet recorded.</p><div class="box"><span class="mono">NOT RUN ON THE TEST MACS</span><p>The box asking to install the developer tools cannot appear on a test Mac, because GitHub's Macs already have them.</p><p>Opening your CRM in Obsidian. The test Macs have no Obsidian; the script read the folders and files the installer made instead.</p></div></div><div class="footer"><span class="mono">Layer 1 &middot; Foundation</span><span class="pgno">8</span><span class="mono">Outliers</span></div></div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "main": "outliers-crm-01-foundation",
+  "main_commit": "98eba1621245f6747234985ec5c1bed8740220e7",
+  "mac": "outliers-crm-01-foundation-mac",
+  "macgen_commit": "50a7935",
+  "date": "2026-09-26",
+  "fingerprint": "b49e06d1f28921cc9ba156c55da670139bccfd64ddde0379fd414ab23136ded4",
+  "left_out_of_fingerprint": [
+    ".mac-version.json",
+    "guide/Layer-1-Foundation (Mac).pdf",
+    "guide/Layer-1-Foundation.html"
+  ],
+  "files": [
+    {
+      "path": ".gitignore",
+      "category": "same",
+      "sha256": "271540188ae129e9d99d3a8ad965db71df8c7cd7abfacb3580f60a5b61de5c1a"
+    },
+    {
+      "path": "README.md",
+      "category": "changed",
+      "sha256": "007563f0ca6bac5a0b72c5c8d67b5f5f24847995c902effe939718180516c88f"
+    },
+    {
+      "path": "WHAT-I-STOLE.md",
+      "category": "same",
+      "sha256": "3fac8aec6c93f10be9dede5a1ff37040e93b9c2dbfe5dcb36c784f11676592be"
+    },
+    {
+      "path": "guide/Layer-1-Foundation (Mac).pdf",
+      "category": "left out of the fingerprint"
+    },
+    {
+      "path": "guide/Layer-1-Foundation.html",
+      "category": "left out of the fingerprint"
+    },
+    {
+      "path": "install.py",
+      "category": "same",
+      "sha256": "62a3889090fb436f21638325cd16bfb8e0e83c63d4731e3d66ce64a2738c1ad6"
+    }
+  ]
+}
